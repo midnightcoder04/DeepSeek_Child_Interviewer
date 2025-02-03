@@ -13,10 +13,13 @@ Download the deepseek Model from Olama [link](https://ollama.com/download/Ollama
 )
 Download an Editor (If you dont have one)
 
-## Setup
+## Setup + Run
 1. Create a venv on anaconda terminal <br />
 ```conda create -n AI_Interviewer python=3.10.10 -y```
 2. Install required packages using pip (install pip if you dont have before this step) <br />
 ```pip install -U langchain langchain-community streamlit pdfplumber semantic-chunkers open-text-embeddings ollama prompt-template langchain langchain_experimental sentence-transformers faiss-cpu```
 3. Navigate to the forked repo folder with the app.py file (cd to path) and run <br />
 ```streamlit run app.py```
+
+## Comments
+Feel free to contribute...
