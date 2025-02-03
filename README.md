@@ -1,4 +1,4 @@
-### AI Interviewer
+# AI Interviewer
 Note: The name is kept as child interviwer not cause it interviews children but cause the 1.5 billion paramters model of DeepSeek feels like a child and was actually hard to work with... 
 
 ## What it does?
