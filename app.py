@@ -84,8 +84,9 @@ if uploaded_file:
     prompt = """
     Use the following resume context to generate an interview question:
     Context: {context}
-    Question: Generate a question that would be asked based on the resume context.
+    Question: Generate a question that would be asked based on the skillset specified in the resume.
     """
+    
 
     setup_prompt = PromptTemplate.from_template(prompt)
     llm_chain = LLMChain(llm=llm, prompt=setup_prompt)
@@ -126,8 +127,8 @@ if uploaded_file:
     # speak_non_blocking(f"Question: {question_stack[0]}")
 
     print("Now for feedback")
+    # Resume: {resume}
     feedback_prompt = """
-    Resume: {resume}
     Question: {question}
     Candidate's Answer: {answer}
     Score the answer out of 100.    
@@ -145,7 +146,7 @@ if uploaded_file:
     if user_input:
         print("Inside User Input:")
         feedback = feedback_chain.run({
-            "resume": docs,
+            # "resume": docs,
             "question": first_question,
             "answer": user_input
         })
