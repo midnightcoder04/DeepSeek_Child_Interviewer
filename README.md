@@ -9,8 +9,7 @@ Note: The name is kept as child interviwer not cause it interviews children but 
 
 ## Pre-Setup -
 Download Anaconda [link](https://www.anaconda.com/download) <br />
-Download the deepseek Model from Olama [link](https://ollama.com/download/OllamaSetup.exe <br />
-)
+Download the deepseek Model from Olama [link](https://ollama.com/download/OllamaSetup.exe) <br />
 Download an Editor (If you dont have one)
 
 ## Setup + Run
