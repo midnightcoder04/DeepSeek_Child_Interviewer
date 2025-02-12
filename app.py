@@ -36,7 +36,7 @@ def speak_non_blocking(text):
         tts_engine.runAndWait()
     threading.Thread(target=run).start()
 
-def recognize_speech():
+def recognize_speech(callback = None):
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
@@ -46,6 +46,8 @@ def recognize_speech():
         print("Recognizing...")
         text = recognizer.recognize_google(audio)
         print(f"Answer: {text}")
+        if callback:
+            callback(text)
         return text
     except Exception as e:
         print(f"Error: {e}")
@@ -138,7 +140,7 @@ if uploaded_file:
     feedback_template = PromptTemplate.from_template(feedback_prompt)
     feedback_chain = LLMChain(llm=llm, prompt=feedback_template)
 
-    user_input = st.text_input("Speak your answer or type it below:", "")
+    user_input = st.text_input("Speak your answer or type it below:", "")       
 
     if st.button("Start Listening"):
         recognize_speech(callback=lambda text: st.session_state.update({"user_input": text}))
