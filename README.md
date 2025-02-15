@@ -1,5 +1,3 @@
----
-
 # AI Interviewer  
 **Note**: The name is kept as "Child Interviewer" not because it interviews children, but because the 1.5 billion parameter model of DeepSeek feels like a child and was actually hard to work with.  
 
