@@ -127,7 +127,7 @@ def upload_resume():
         else:
             # Fallback: if no quotes found, use the entire response
             question = result.strip()
-
+        question = clean_llm_response(question)
         return jsonify({
             "message": "Resume uploaded and processed successfully.",
             "filename": filename,
