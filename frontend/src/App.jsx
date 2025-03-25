@@ -216,6 +216,26 @@ function App() {
     fileInputRef.current.click();
   };
 
+  const handleStopInterview = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post('http://localhost:5000/stop');
+      const { message } = response.data;
+      setMessages((prev) => [
+        ...prev,
+        { type: 'bot', content: message },
+      ]);
+    } catch (error) {
+      console.error('Error stopping interview:', error);
+      setMessages((prev) => [
+        ...prev,
+        { type: 'bot', content: 'An error occurred while stopping the interview. Please try again.' },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0F1E] p-4 text-white">
       <div className="max-w-4xl mx-auto glass rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-blue-500/10">
@@ -268,7 +288,7 @@ function App() {
               accept=".pdf"
               className="hidden"
             />
-                <button
+            <button
               type="button"
               onClick={triggerFileInput}
               className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400
@@ -336,6 +356,17 @@ function App() {
                        transition-all duration-200 font-medium"
             >
               Send
+            </button>
+            <button
+              type="button"
+              onClick={handleStopInterview}
+              disabled={isLoading}
+              className="px-6 py-3 bg-red-500/20 text-red-300 rounded-lg border border-red-500/20
+                       hover:bg-red-500/30 disabled:bg-slate-800/50 disabled:border-slate-700/50
+                       disabled:text-slate-500 disabled:cursor-not-allowed
+                       transition-all duration-200 font-medium"
+            >
+              Stop
             </button>
           </form>
         </div>

@@ -14,9 +14,7 @@ from werkzeug.utils import secure_filename
 import uuid
 from flask_cors import CORS
 
-
 app = Flask(__name__)
-
 
 # Enable CORS for all routes
 CORS(app)
@@ -57,7 +55,6 @@ Be concise and professional. DO NOT include any internal thinking or reasoning p
 setup_prompt = PromptTemplate.from_template(prompt_template)
 feedback_template = PromptTemplate.from_template(feedback_prompt)
 
-
 UPLOAD_FOLDER = 'data'
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -65,6 +62,11 @@ ALLOWED_EXTENSIONS = {'pdf'}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Global variables to store interview history and scores
+question_answer_history = []
+total_score = 0
+num_answers = 0
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -160,6 +162,7 @@ def clean_llm_response(response):
 
 @app.route('/evaluate-answer', methods=['POST'])
 def evaluate_answer():
+    global question_answer_history, total_score, num_answers
     data = request.json
     if not data or 'question' not in data or 'answer' not in data:
         return jsonify({"error": "Invalid input"}), 400
@@ -171,6 +174,13 @@ def evaluate_answer():
         "answer": data['answer']
     })
     feedback = clean_llm_response(raw_feedback)
+
+    score_match = re.search(r'Score:\s*(\d+)', feedback)
+    print(score_match)
+    if score_match:
+        score = int(score_match.group(1))
+        total_score += score
+        num_answers += 1
 
     # Step 2: Generate follow-up question with improved prompt
     follow_up_prompt = """
@@ -195,12 +205,40 @@ def evaluate_answer():
     })
     follow_up_question = clean_llm_response(raw_follow_up)
 
+    # Store question and answer in history
+    question_answer_history.append({
+        "question": data['question'],
+        "answer": data['answer'],
+        "feedback": feedback,
+        "follow_up": follow_up_question
+    })
+
     # Step 3: Return feedback and follow-up question
     return jsonify({
         "feedback": feedback.strip(),
         "follow_up_question": follow_up_question.strip()
     })
 
+@app.route('/stop', methods=['POST'])
+def stop_interview():
+    global question_answer_history, total_score, num_answers
+    if not question_answer_history:
+        return jsonify({"message": "No interview history available."}), 400
+
+    # Calculate average score
+    if num_answers > 0:
+        average_score = total_score / num_answers
+    else:
+        average_score = 0
+
+    # Clear the interview history and scores
+    question_answer_history = []
+    total_score = 0
+    num_answers = 0
+
+    return jsonify({
+        "message": f"The interview has ended. The average score of the candidate is {average_score:.2f}."
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
